@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>AI Resume Analyzer</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6f9;
+margin:40px;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
+margin-bottom:20px;
+}
+
+.skill{
+background:#2ecc71;
+color:white;
+padding:6px 10px;
+margin:5px;
+display:inline-block;
+border-radius:6px;
+}
+
+.gap{
+background:#e74c3c;
+color:white;
+padding:6px 10px;
+margin:5px;
+display:inline-block;
+border-radius:6px;
+}
+
+.score{
+font-size:40px;
+font-weight:bold;
+color:#2c3e50;
+}
+
+.job-card{
+border:1px solid #ddd;
+padding:15px;
+margin:10px 0;
+border-radius:8px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>AI Resume Analysis Dashboard</h1>
+
+<div class="card">
+
+<h2>Resume Score</h2>
+
+<div class="score">{{score}} / 100</div>
+
+</div>
+
+<div class="card">
+
+<h2>Extracted Skills</h2>
+
+{% for skill in skills %}
+<span class="skill">{{skill}}</span>
+{% endfor %}
+
+</div>
+
+<div class="card">
+
+<h2>Skill Gap for {{best_job}}</h2>
+
+{% for g in gap %}
+<span class="gap">{{g}}</span>
+{% endfor %}
+
+</div>
+
+<div class="card">
+
+<h2>Top Job Matches</h2>
+
+{% for table in tables %}
+{{ table|safe }}
+{% endfor %}
+
+</div>
+
+<div class="card">
+
+<h2>Match Visualization</h2>
+
+<canvas id="matchChart"></canvas>
+
+</div>
+
+</div>
+
+<script>
+
+const labels = JSON.parse('{{ labels | tojson | safe }}');
+const scores = JSON.parse('{{ scores | tojson | safe }}');
+
+new Chart(document.getElementById("matchChart"), {
+    type: "bar",
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "Match %",
+            data: scores
+        }]
+    }
+});
+
+</script>
+
+</body>
+</html>

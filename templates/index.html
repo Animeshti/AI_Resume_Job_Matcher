@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>AI Resume Matcher</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6f9;
+text-align:center;
+padding:100px;
+}
+
+.upload-box{
+border:2px dashed #3498db;
+padding:40px;
+background:white;
+border-radius:10px;
+width:400px;
+margin:auto;
+}
+
+button{
+padding:10px 20px;
+background:#3498db;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>AI Resume & Job Matcher</h1>
+
+<form action="/upload" method="post" enctype="multipart/form-data">
+
+<div class="upload-box">
+
+<p>Upload Your Resume</p>
+
+<input type="file" name="resume" required>
+
+<br><br>
+
+<button type="submit">Analyze Resume</button>
+
+</div>
+
+</form>
+
+</body>
+
+</html>
