@@ -1,28 +1,16 @@
 import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-
-def match_jobs(resume_text):
-
+def match_jobs(user_skills):
     jobs = pd.read_csv("jobs.csv")
 
-    job_descriptions = jobs["Skills"].tolist()
+    tfidf = TfidfVectorizer()
+    vectors = tfidf.fit_transform(jobs["Skills"].tolist() + [user_skills])
 
-    data = job_descriptions + [resume_text]
+    similarity = cosine_similarity(vectors[-1], vectors[:-1])
 
-    cv = CountVectorizer()
-
-    matrix = cv.fit_transform(data)
-
-    similarity = cosine_similarity(matrix[-1], matrix[:-1])
-
-    scores = similarity[0]
-
-    jobs["Match %"] = (scores * 100).round(2)
-
+    jobs["Match %"] = similarity[0] * 100
     jobs = jobs.sort_values(by="Match %", ascending=False)
 
-    resume_score = round(jobs["Match %"].max(), 2)
-
-    return jobs, resume_score
+    return jobs, round(jobs.iloc[0]["Match %"], 2) 

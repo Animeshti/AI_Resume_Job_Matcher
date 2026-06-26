@@ -13,10 +13,8 @@ ALLOWED_EXTENSIONS = {"pdf", "docx"}
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-
 # Create uploads folder if not present
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 # Check allowed file types
@@ -32,41 +30,58 @@ def index():
 @app.route("/upload", methods=["POST"])
 def upload():
 
-    # Check if file exists
     if "resume" not in request.files:
-        return "No file uploaded"
+        return render_template("index.html", error="No file uploaded")
 
     file = request.files["resume"]
 
     if file.filename == "":
-        return "Please select a file"
+        return render_template("index.html", error="Please select a file")
 
     if not allowed_file(file.filename):
-        return "Only PDF or DOCX files are allowed"
+        return render_template("index.html", error="Only PDF or DOCX allowed")
 
-    # Secure file name
     filename = secure_filename(file.filename)
-
     path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-
     file.save(path)
 
-    # Extract resume text
+    # Extract text
     resume_text = extract_text(path)
+
+    if not resume_text:
+        return render_template("index.html", error="Could not read file")
 
     # Extract skills
     skills = extract_skills(resume_text)
 
+    if not skills:
+        return render_template("index.html", error="No skills found")
+
     # Match jobs
     jobs, score = match_jobs(" ".join(skills))
-
-    # Best job
     best_job = jobs.iloc[0]
 
     job_skills = best_job["Skills"].split()
 
-    # Skill gap analysis
+    # Skill gap
     skill_gap = [s for s in job_skills if s not in skills]
+
+    recommendations = []
+
+    if "python" not in skills:
+        recommendations.append("Learn Python")
+
+    if "sql" not in skills:
+        recommendations.append("Improve SQL skills")
+
+    if "machine learning" not in skills:
+        recommendations.append("Learn Machine Learning")
+
+    if "projects" not in skills:
+        recommendations.append("Add more projects to your resume")
+
+    if not recommendations:
+        recommendations.append("Your resume looks strong! 👍")
 
     # Top jobs
     top_jobs = jobs.head(5)
@@ -76,17 +91,16 @@ def upload():
 
     return render_template(
         "result.html",
-        tables=[top_jobs.to_html(classes="data", index=False)],
         skills=skills,
         score=score,
         best_job=best_job["Job Title"],
         gap=skill_gap,
         labels=labels,
-        scores=scores
+        scores=scores,
+        recommendations=recommendations  
     )
 
 
 if __name__ == "__main__":
-    import os
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=True)

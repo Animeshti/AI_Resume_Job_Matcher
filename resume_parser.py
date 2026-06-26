@@ -12,4 +12,4 @@ def extract_text(file_path):
     else:
         text = ""
 
-    return text.lower() 
+    return text.lower()  

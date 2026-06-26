@@ -1,60 +1,83 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-<title>AI Resume Matcher</title>
+<title>AI Resume Analyzer</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-
-body{
-font-family:Arial;
-background:#f4f6f9;
-text-align:center;
-padding:100px;
+body {
+    background: linear-gradient(135deg, #1f4037, #99f2c8);
+    color: white;
 }
 
-.upload-box{
-border:2px dashed #3498db;
-padding:40px;
-background:white;
-border-radius:10px;
-width:400px;
-margin:auto;
+.hero {
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
 }
 
-button{
-padding:10px 20px;
-background:#3498db;
-color:white;
-border:none;
-border-radius:5px;
-cursor:pointer;
+.card {
+    border-radius: 20px;
 }
-
 </style>
-
 </head>
 
 <body>
 
-<h1>AI Resume & Job Matcher</h1>
+<!-- NAVBAR -->
+<nav class="navbar navbar-dark bg-dark shadow">
+  <div class="container">
+    <span class="navbar-brand"> AI Resume Analyzer</span>
+  </div>
+</nav>
 
-<form action="/upload" method="post" enctype="multipart/form-data">
+<!-- HERO SECTION -->
+<div class="hero">
 
-<div class="upload-box">
+    <h1 class="display-4 fw-bold">Analyze Your Resume with AI</h1>
+    <p class="lead">Get job matches, skill gaps & smart recommendations instantly</p>
 
-<p>Upload Your Resume</p>
+    <!-- ERROR -->
+    {% if error %}
+    <div class="alert alert-danger w-50 mt-3">
+        {{ error }}
+    </div>
+    {% endif %}
 
-<input type="file" name="resume" required>
+    <!-- UPLOAD CARD -->
+    <div class="card p-4 shadow mt-4 text-dark" style="width: 350px;">
 
-<br><br>
+        <form action="/upload" method="POST" enctype="multipart/form-data" onsubmit="showLoader()">
 
-<button type="submit">Analyze Resume</button>
+            <input type="file" name="resume" class="form-control mb-3" required>
+
+            <button class="btn btn-success w-100">
+                Analyze Resume 
+            </button>
+
+        </form>
+
+        <!-- LOADER -->
+        <div id="loader" class="mt-3" style="display:none;">
+            <div class="spinner-border text-success"></div>
+            <p>AI is analyzing...</p>
+        </div>
+
+        <small class="text-muted mt-2 d-block">PDF / DOCX only</small>
+
+    </div>
 
 </div>
 
-</form>
+<script>
+function showLoader() {
+    document.getElementById("loader").style.display = "block";
+}
+</script>
 
 </body>
-
 </html>

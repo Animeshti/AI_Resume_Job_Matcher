@@ -3,24 +3,22 @@ import spacy
 # Load NLP model
 nlp = spacy.load("en_core_web_sm")
 
-# Common tech skills list
-SKILLS_DB = [
-"python","java","c++","sql","html","css","javascript","react","nodejs",
-"django","flask","machine learning","deep learning","nlp","tensorflow",
-"pytorch","pandas","numpy","excel","powerbi","tableau","aws","docker",
-"kubernetes","linux","git","api","android","kotlin","swift",
-"data analysis","statistics","spark","hadoop","mongodb","postgresql",
-"data visualization","computer vision","transformers","ai"
+# Simple skill keywords list
+SKILLS = [
+    "python", "java", "c++", "html", "css", "javascript",
+    "react", "nodejs", "django", "flask", "sql",
+    "machine learning", "deep learning", "nlp",
+    "data analysis", "pandas", "numpy", "tensorflow", "pytorch"
 ]
 
-def extract_skills(text):
 
-    text = text.lower()
+def extract_skills(text):
+    doc = nlp(text.lower())
 
     found_skills = []
 
-    for skill in SKILLS_DB:
-        if skill in text:
-            found_skills.append(skill)
+    for token in doc:
+        if token.text in SKILLS:
+            found_skills.append(token.text)
 
-    return list(set(found_skills))
+    return list(set(found_skills))  
